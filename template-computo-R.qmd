@@ -1,197 +1,562 @@
-# Introduction
-
-## About this document
-
-This document, accompanied with the [tuned git repos](https://github.com/computorg/template-computo-R/), provides a template for writing contributions to **Computo** [@computo]. 
-
-::: {.callout-tip}
-## Note
-The content of this document only provides key formatting principles. For a detailed, step-by-step guide on preparing your article and submitting it to Computo, please consult the [guidelines for authors](https://computo-journal.org/site/guidelines-authors.html).
-:::
-
-## Quarto
-
-[Quarto](https://quarto.org/) is a versatile formatting system for authoring documents integrating markdown, LaTeX and code blocks interpreted either via Jupyter or Knitr (thus supporting Python, R and Julia). It relies on the [Pandoc](https://pandoc.org/MANUAL.html) document converter.
-
-## Requirements
-
-You need [quarto](https://quarto.org/) installed on your system and the [Computo extension](https://github.com/computorg/computo-quarto-extension) to prepare your document. For the latter, once quarto is installed,  run the following to install the extension in the current directory (it creates a `_extension` directory which is ignored by git thanks to `.gitignore` by default):
-
-```.bash
-quarto add computorg/computo-quarto-extension
-```
-
-[`R`](https://www.r-project.org/) and the following `R` packages must be installed on your computer: [`knitr`](https://cran.r-project.org/package=knitr), [`markdown`](https://cran.r-project.org/package=markdown).
-
-# Formatting
-
-This section covers basic formatting guidelines for quarto documents.
-
-To render a document, run `quarto render`. By default, both PDF and HTML documents are generated:
-
-```.bash
-quarto render template-computo-R.qmd # will render both to html and PDF
-```
-
-::: {.callout-tip}
-## Note
-
-To check the syntax of the formatting below, you can use the `</> source` button at the top left of this document.
-:::
-
-## Basic markdown formatting
-
-**Bold text** or _italic_
-
-- This is a list
-- With more elements
-- It isn't numbered.
-
-But we can also do a numbered list
-
-1. This is my first item
-2. This is my second item
-3. This is my third item
-
-## Mathematics
-
-### Mathematical formulae
-
-[LaTeX](https://www.latex-project.org/) code is natively supported[^lualatex], which makes it possible to use mathematical formulae:
-
-[^lualatex]: We use [lualatex](https://lualatex.org/) for this purpose.
-
-$$
-f(x_1, \dots, x_n; \mu, \sigma^2) =
-\frac{1}{\sigma \sqrt{2\pi}} \exp{\left(- \frac{1}{2\sigma^2}\sum_{i=1}^n(x_i - \mu)^2\right)}
-$$
-
-It is also posible to cross-reference an equation, see @eq-mylabel:
-
-$$
-\begin{aligned}
-D_{x_N} & = \frac12
-\left[\begin{array}{cc}
-x_L^\top & x_N^\top \end{array}\right] \,
-\left[\begin{array}{cc}  L_L & B \\ B^\top & L_N \end{array}\right] \,
-\left[\begin{array}{c}
-x_L \\ x_N \end{array}\right] \\
-& = \frac12 (x_L^\top L_L x_L + 2 x_N^\top B^\top x_L + x_N^\top L_N x_N),
-\end{aligned}
-$$ {#eq-mylabel}
-
-### Theorems and other amsthem-like environments
-
-Quarto includes a nice support for theorems, with predefined prefix labels for theorems, lemmas, proposition, etc. see [this page](https://quarto.org/docs/authoring/cross-references.html#theorems-and-proofs). Here is a simple example:
-
-::: {#thm-slln}
-## Strong law of large numbers
-
-The sample average converges almost surely to the expected value:
-
-$$\overline{X}_n\ \xrightarrow{\text{a.s.}}\ \mu \qquad\textrm{when}\ n \to \infty.$$
-:::
-
-See @thm-slln.
-
-## R Code
-
-Quarto uses either Jupyter or knitr to render code chunks. This can be triggered in the yaml header. In this tutorial, we use `knitr` (`R` and packages `knitr`, `markdown` must be installed on your computer).
-
-``` yaml
 ---
-title: "My Document"
-author "Jane Doe"
+title: "Challenging estimation of tuning parameters in sPLSDR model to predict the incidence of rare diseases"
+author:
+    - name: Ian Meneghel Danilevicz
+      corresponding: true
+      email: ian.meneghel-danilevicz@inserm.fr 
+      url: https://github.com/iandanilevicz/
+      orcid: 0000-0003-4541-0524
+      affiliations:
+      - name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS), EpiAgeing, F-75004 Paris, France 
+        url: https://cress-umr1153.fr/fr/teams/epiageing/ 
+    - name: Sam Vidil
+      url: https://github.com/samvidil
+      orcid: 0009-0007-6414-3966
+      affiliations:
+      - name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS), EpiAgeing, F-75004 Paris, France 
+        
+    - name: Séverine Sabia
+      url: https://github.com/sevslb
+      orcid: 0000-0003-3109-9720
+      affiliations:
+      - name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS), EpiAgeing, F-75004 Paris, France 
+      - name: UCL Brain Sciences, Division of Psychiatry, University College London, London, UK
+        url: https://www.ucl.ac.uk/brain-sciences/psychiatry
+#date: 06/28/2023
+#date-modified: last-modified
+abstract: >+
+  We investigate some practical points of the sparse partial least squares deviance residuals (sPLSDR) model, a machine learning (ML) method with important application potential and a powerful alternative for Cox regression analysis when dimension reduction and variable selection are required. It can be used in a broad range of contexts, among which the health domain. This method requires to tune two hyper-parameters: eta (sparsity level) and D (number of components). Usually, the literature recommends cross-validation (CV) with a number of folds that depends on the sample size to estimate the hyperparameters. However, in case of dichotomous outcome for which the ratio of cases and non-cases is small this approach appears to be unstable. This is the case in rare disease such as incidence of major neurocognitive disorder (NCD). In that case, even large samples may perform as poorly as small samples. We specifically test this scenario of large samples with rare events using Monte Carlo simulations with different performance criteria (C-index and AIC). We observed that five folds are more conservative (biased) than one fold, and it presents more variability (less precise) in case of rare event outcomes. Previous authors suggested that Bootstrap or leave-one-out (LOO) could be a wise alternative. We checked Bootstrap with one fold in our real analysis application using the Whitehall II accelerometer sub-study (N total = 3,969,  cases = 291 (7.3%)) as a training set and the UK Biobank as a validation set (N total = 54,833,  cases = 750 (1.4\%)), both considerably large sample size studies, with incidence of major neurocognitive disorders as an example of rare outcomes. This application shows that CV is sensitive to the number of folds and the initial seed. The counterpart Bootstrap was more robust and displayed two components with eta equal to 0.75 as a consistent optimum choice for the tuning parameters. However, this approach requires external validation, which is not always feasible. Further studies can better map the ideal number of folds for CV depending on the sample size and the ratio of cases/non-cases. As dichotomous outcomes and survival time are classical statistical subjects, the ML literature provide clear and precise recommendations for several available dawn methods.  
+keywords: [Machine learning, Survival analysis, Variable selection, Cross-validation, Bootstrap]
+bibliography: references.bib
+header-includes:
+  - \usepackage{bm,amsfonts,amsmath,amssymb,graphicx,algorithm2e,enumerate}
 ---
+
+# Background
+
+Accelerometer devices objectively measure the wrist acceleration of human participants @Migueles2019. The derived features calculated from the accelerometer three axial time series aggregated per minute for each participant during a certain period of time can be used to estimate rest-activity rhythm, daytime activity, sleep, and chronotype. These features can be used to predict several health outcomes such as mortality @Chen2022, cardio-metabolic diseases @Cassidy2018, and neurodegenerative diseases @Nguyen2023. This represents a vast potential for medical research @Chan2022 as these devices provide a more objective and detailed information than commonly used self-reported data.
+
+In survival analysis, we model the duration from a time origin until an event of interest occurs, considering a set of predictors. In case of several candidate predictors, some selection and/or combination of predictors are often operated to allow for a parsimonious model, using machine learning (ML) methods such as the sparse partial least squares deviance residuals (sPLSDR) model @Bastien2014.
+
+ML methods often require tuning parameters to be fitted. These parameters are usually pre-estimated using cross-validation (CV) techniques. The general recommendation consists of doing 3 to 10 folds (depending on the sample size) @Lecao2021, within a CV with all combinations of hyper-parameters. The general rule is $n/k>5$, where $n$ is the sample size and $k$ the number of folds @Lecao2021(page 82). The sPLSDR requires two hyper-parameters: First $\eta \in [0,1)$, where 0 means a full dense model with all features, and values close to 1 a highly sparse model with only few features retained; second $D$ components (each component is a combination of features as in PLS regression). One approach consists of determining a large maximum number of components $D$ and a large grid for $\eta$, later trying a finer grid for $\eta$ only on the best options of $D$ @Chen2022. To evaluate the hotspots which are considering the best hyperparameter options must be based on a criterion, eg, integrated AUC survival ROC (iAUC) @Li2006. Even if this approach is commonly used, there are situations when it lacks enough stability.
+
+It happens that when the outcome of interest is rare, for example major neurocognitive disorder (NCD), the process of optimisation is unstable for different fold values, and even for the same fold value, it may vary according the initial seed, indicating a lack of reliability. This instability could be due to small sample size where 5 folds for CV are recommended, but we hypothesise that the low proportion of cases by non-cases could be problematic even for large and medium sample size studies.
+
+This paper will discuss ways to overcome the challenge of tuning parameter estimation in cases of rare events. Our application is based on the identification of accelerometer data predicting major NCD, such as Alzheimer's disease, using the Whitehall II ($n=3969$) as a training set and the UK Biobank (UKB) as a validation set. Our proposition to get stable results for the tuning parameters is to keep all the data from the training set and bootstrap it, and then to test the validity of the model using in an external dataset (UKB). The optimization process for Whitehall II is unstable for different fold values, and even for the same fold value (with different initial seed), which indicates a lack of reliability. The instability is not due to a small sample size, as Whitehall II is a relatively large cohort. However, the outcome presents a small proportion of incident events (1.4\%, the target disease is the major NCD, which includes Alzheimer’s disease). The problem was not fixed when considering the rules for small sample size (5 folds) which is far from the bottom level $n/k>5$ suggest by @Lecao2021(page 82).
+
+A small simulation study was conducted to test the hypotheses of low stability in case of small ratio between cases and non-cases. We artificially created data sets with $n=5000$ where the maximum observation time is 10 years of a disease for which incidence over time is small (resulting in few cases occurring during the observation period). In these simulations, we divided the data into five folds or keep the whole pool together, and we estimated the models using traditional performance criteria, such as the C-index and the Akaike information criterion (AIC).
+
+# Method
+
+## The sPLS technique
+
+The sparse partial least squares regression (sPLS) was proposed by @Chun2010 to promote variable selection during PLS dimension reduction. The sPLS can select variables for the first direction vector and additional variables in the construction of the subsequent direction vectors @Bastien2014.
+
+A direct extension of PLS regression to sPLS regression could be provided by imposing $L_1$ constraint on PLS direction on $n$-vector $w$ as $$
+\max_{w} w^T M w \text{ subject to } w^Tw = ||w||_2 = 1, ||w||_1 \leq c,
+$$ {#eq-spls} where $||w||_2 = w^Tw$, $||w||_1=\sum_{i=1}^{n} |w_i|$, $|u|$ is the absolute of $u$, $M=X^T Y Y^T X$, $Y$ and $X$ are matrices with the same number of rows, $c > 0$ is the $L_1$ constraint. If $Y=X$, then we have the special case sparse principal component analysis (sPCA) @Jolliffe2003.
+
+## The Cox proportional hazards model
+
+The model assumes the following hazard function for the occurrence of an event at time $t$ in the presence of censoring as follows $h(t) = h_0(t) \exp( \beta^T X),$ where $h_0(t)$ is a baseline hazard function, $\beta$ is a vector of regression coefficients and $X = (X_1,\dots,X_p)$ is a $n \times p$ matrix of features with $x_i = (x_{i1}, \dots, x_{ip})$ a row-vector for the i-th individual. The event could be any disease of interest. Based on the available data, Cox's partial likelihood can be written as $$
+    L(\beta) = \prod_{k \in \Omega} \frac{\exp( \beta^T x_k)}{\sum_{j \in \zeta_k} \exp( \beta^T x_j)},
+$$ where $\Omega$ is the set of indices of the events and $\zeta_k$ denotes the set of indices of the individuals at risk at time $t_k$. The goal is to find the coefficients which maximize the log partial likelihood function @Bastien2014.
+
+## Deviance residuals
+
+Here, we consider a Cox model with no time-dependent explanatory variables and, at most, one event per patient. Regardless, the Martingale residuals for the i-th subject with observation time $t_i$ and event status $\delta_i$, where $\delta_i=0$ if $t_i$ is a censored time, and $\delta_i=1$ otherwise is as $$
+m_i = \delta_i - \hat{\Delta}_0(t_i) \exp (\hat{\beta}^T x_i),
+$$ where $\hat{\Delta}_0(t_i)$ is the estimated cumulative hazard function at time $t_i$ @Bastien2014. However, the Martingale residuals used to be highly skewed @Bastien2014. Although, the deviance residuals $r_i$ are a normalized transform of the martingale residuals. For the Cox model, the deviance residuals @Collett1994 amount to a form as $$  
+r_i = \mathrm{sign}  (m_i) [2\{ - r_i - \delta_i \log (\delta_i - m_i)\}]^{0.5},
+$$ {#eq-residuals}
+
+where $\mathrm{sign}(u)$ is the sign of $u \in \mathbb{R}$.
+
+## The sPLSDR model
+
+The sparse partial least squares deviance residual (sPLSDR) model was proposed by @Bastien2014 as an upgrade concerning sPLS proposed by @Chun2010 and partial least squares Cox (PLS-Cox) @Bastien2001, @Bastien2008. The general idea is to apply the sPLS technique presented in @eq-spls on the deviance residual from @eq-residuals.
+
+The algorithm was described in @Bastien2014 as folllows
+
+1.  Cox model without covariates to derive the null deviance residuals $r = (r_1, \dots, r_n)^T$ from @eq-residuals
+2.  Computation of the sPLS components by using the sPLS regression from @eq-spls with the null deviance residuals as outcome.
+3.  Set $\hat{\beta}^{PLS}=0$, $d=1$, $Y=r$,
+4.  While $d \leq D$
+
+```{=html}
+<!-- -->
+```
+a.  $w = (|z|-c/2)+ \mathrm{sign}(z)$, where $z=X^TY/|| X^TY||_2$,
+b.  Update $\Omega$ as $\{d : \hat{w}_d \neq 0\} \cup \{d : \hat{\beta}^{PLS}_d \neq 0\}$
+c.  Fit sPLS with $X$ by using the $d$ number of latent components.
+d.  Update $\hat{\beta}^{PLS}$ by using the new sPLS estimates of the direction vectors and update $Y$ and $d$ through $Y \leftarrow Y-X\hat{\beta}^{PLS}$ and $d \leftarrow d+1$
+
+```{=html}
+<!-- -->
+```
+5.  Cox model on the $D$ retained sPLSDR components.
+
+# Monte Carlo study
+
+## Simulation plan
+
+We used an exponential survival model, where the hazard function is 
+$$
+h_i(t) = \lambda \exp( X_i \beta ),
+$${#eq-sim} 
+and the cumulative hazard is $$H_i(t) = \lambda t \exp( X_i \beta ),$$ such as implemented on the **simsurv** R Package by @Brilleman2021. We create artificial data with $n=5000$ number of individuals, $\lambda=0.05, 0.005$ rate parameter, $\beta^T = (\beta^T_1, \beta^T_2, \beta^T_3)$ is the coefficient parameters, composed by $\beta^T_1 = (0.15, 0.1, 0.05)$, $\beta^T_2 = (-0.15, -0.1, -0.05)$ and\
+$\beta^T_3=(0,0,0,0,0,0)$; the covariate matrix is $X_{i,(1:3)} \sim N(\mu_1, R)$ a multivariate normal with $\mu_1=(0.15, 0.1, 0.05)^T$ and $R$ a matrix with variance on the diagonal of ones and covariance on the off-diagonals of 0.5; $X_{i,(4:6)} \sim N(\mu_2, R)$ a multivariate normal with $\mu_2=(-0.15, -0.1, -0.05)^T$ and same covariance; $X_{i,(7:12)} \sim N(\mu_3, I)$ a multivariate normal with $\mu_3=(0,0,0,0,0,0)^T$ and $I$ an identity matrix. The maximum observed time is $m=10$.
+
+So this simple model may be well estimated by a sPLSDR model with two dimensions. We proceed with a Monte Carlo simulation, replicating $M=1000$ times each $\lambda$ and estimating the model changing $\eta=0, 0.1, 0.2, \dots, 0.9$, using $k=1,5$ folds. We save the C-index and the AIC of each iteration of the Monte Carlo. We set all models with two dimensions ($D=2$). Finally, we count how many times each value of $\eta$ was considered the best in the row; this results in a frequency per value of $\eta$.
+
+## Simulation implementation
+
+Before the results, we implemented some functions available in the R folder. Also, some packages are necessary, such as **plsRcox** (the original package to estimate sPLSDR @Bastien2014), **Coxmos** (another package to estimate sPLSDR but with a convenient way to extract the $W^*$ matrix of weights, this matrix is similar to a loading matrix in PCA @Coxmos), **caret** (to split the dataset in folds @caret).
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(plsRcox)
+library(Coxmos)
+library(simsurv)
+library(caret) 
+
+# Remember to replace this line to Github directory
+source("C:/Users/idanilevicz/Documents/Ian/Computo/Computo_1/R/functions3.R")
 ```
 
-`R` code [@R-base] chunks may be embedded as follows:
+```{r include=FALSE, message=FALSE, warning=FALSE}
+library(plsRcox)
+library(Coxmos)
+library(simsurv)
+library(caret) 
 
-```{r r-code, echo=TRUE}
-x <- rnorm(10)
+# Remember to replace this line to Github directory
+source("C:/Users/idanilevicz/Documents/Ian/Computo/Computo_1/R/functions3.R")
 ```
 
-## Figures
+Then we run the simulations using our loaded functions.
 
-Plots can be generated as follows:
+<!--this is for display only -->
 
-```{r pressure, message = FALSE}
-library("ggplot2")
-p <- ggplot(mpg, aes(displ, hwy)) +
-  geom_point() +
-  geom_smooth()
-p
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+lambda1 = 0.005
+lambda2 = 0.05
+
+nfold = 5
+n = 5000
+maxt = 10
+M = 1000
+eta = 0:9/10
+
+set.seed(2025)
+sim_surv1 =  sim_surv_c(lambda1, n, M, eta, ncomp=2, nfold, maxt)   # lambda 1 and c-index
+sim_surv2 =  sim_surv_c(lambda2, n, M, eta, ncomp=2, nfold, maxt)   # lambda 2 and c-index  
+
+set.seed(2025)
+sim_surv3 =  sim_surv_aic(lambda1, n, M, eta, ncomp=2, nfold, maxt) # lambda 1 and AIC  
+sim_surv4 =  sim_surv_aic(lambda2, n, M, eta, ncomp=2, nfold, maxt) # lambda 2 and AIC
+
 ```
 
-It is also possible to create figures from static images:
+<!--this really run -->
 
-:::{#fig-logo}
+```{r include=FALSE, message=FALSE, warning=FALSE}
+lambda1 = 0.005
+lambda2 = 0.05
 
-![](https://raw.githubusercontent.com/computorg/comm/main/design/logo_text_vertical.png){height=200}
+nfold = 5
+n = 5000
+maxt = 10
+M = 1000 # replace to 1000
+eta = 0:9/10
 
-Computo logo (label)
+set.seed(2025)
+sim_surv1 =  sim_surv_c(lambda1, n, M, eta, ncomp=2, nfold=nfold, maxt)   # lambda 1 and c-index
+sim_surv2 =  sim_surv_c(lambda2, n, M, eta, ncomp=2, nfold=nfold, maxt)   # lambda 2 and c-index  
+
+set.seed(2025)
+sim_surv3 =  sim_surv_aic(lambda1, n, M, eta, ncomp=2, nfold=nfold, maxt) # lambda 1 and AIC  
+sim_surv4 =  sim_surv_aic(lambda2, n, M, eta, ncomp=2, nfold=nfold, maxt) # lambda 2 and AIC
+```
+
+## Simulation results
+
+```{r, message=FALSE, warning=FALSE }
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+eta_vals <- sim_surv1$Eta[, 1]
+n_rep <- nrow(sim_surv1$N_features)
+
+# Long format with lambda as a factor
+df_long <- data.frame(
+  Eta = rep(eta_vals, each = n_rep),
+  Lambda_0.005 = as.vector(sim_surv1$N_features),
+  Lambda_0.05  = as.vector(sim_surv2$N_features)
+) %>%
+  pivot_longer(cols = starts_with("Lambda"), names_to = "Lambda", values_to = "N_features") %>%
+  mutate(Lambda = recode(Lambda, Lambda_0.005 = "λ = 0.005", Lambda_0.05 = "λ = 0.05"))
+
+# Plot: grouped boxplots
+ggplot(df_long, aes(x = factor(Eta), y = N_features, fill = Lambda)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  labs(
+    x = expression(eta),
+    y = "Number of selected features",
+    title = "Selected features by η and λ"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("λ = 0.005" = "lightblue", "λ = 0.05" = "lightgreen"))+
+  geom_hline(yintercept = 6, linetype = "dashed", color = "black", linewidth = 0.8)
+
+```
+
+The above table shows the results for the number of selected features depending on the value of $\eta$. The number of selected features is decreasing as eta increases. Remember that we set a simulation within the coefficient parameter vector that has a length of 12, but 6 values equal to zero and six different from zero. So, a fair number of selected features must be equal or smaller than six, since there is a moderate correlation between the non-zero coefficients. Finally, the value of eta, which corresponds to a fair number of features, is $\eta \in [0.8, 0.9]$ for $\lambda = 0.005$ or $\eta \in [0.9]$ for $\lambda = 0.05$. These regions for eta are the targets that we will search for with C-index and AIC in the following figures.
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(patchwork)
+library(grid)
+library(cowplot)
+
+df <- data.frame(
+  eta = sim_surv1$Eta[1:10,1],
+  frequency1 = sim_surv1$Eta[1:10,2]/10, # lambda 1  k=1
+  frequency2 = sim_surv1$Eta[1:10,3]/10, # lambda 1  k=2
+  frequency3 = sim_surv2$Eta[1:10,2]/10, # lambda 2
+  frequency4 = sim_surv2$Eta[1:10,3]/10  # lambda 2
+)
+
+# Ensure 'eta' is treated as a factor for proper labeling on x-axis
+df$eta <- as.factor(df$eta)
+
+# Plot with ggplot2
+p1 = ggplot(df, aes(x = eta, y = frequency1)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+p2 = ggplot(df, aes(x = eta, y = frequency2)) +
+  geom_bar(stat = "identity", fill = "tomato") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+p3 = ggplot(df, aes(x = eta, y = frequency3)) +
+  geom_bar(stat = "identity", fill = "forestgreen") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+p4 = ggplot(df, aes(x = eta, y = frequency4)) +
+  geom_bar(stat = "identity", fill = "orchid") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+framed_label <- function(text, angle = 0) {
+  ggdraw() +
+    draw_label(
+      text,
+      fontface = "bold",
+      size = 12,
+      angle = angle,
+      hjust = 0.5,
+      vjust = 0.5
+    ) +
+    theme_void() +
+    theme(
+      plot.background = element_rect(color = "lightgray", fill = "gray95", size = 0.8)
+    )
+}
+
+# Label row
+top_labels <- plot_grid(
+  NULL,
+  framed_label("k = 1"),
+  framed_label("k = 5"),
+  nrow = 1,
+  rel_widths = c(0.15, 1, 1)
+)
+
+# Rows with left labels
+row1 <- plot_grid(
+  framed_label(expression(paste(lambda ,"= 0.005")), angle = 90),
+  p1, p2,
+  nrow = 1,
+  rel_widths = c(0.15, 1, 1)
+)
+
+row2 <- plot_grid(
+  framed_label(expression(paste(lambda ,"= 0.05")), angle = 90),
+  p3, p4,
+  nrow = 1,
+  rel_widths = c(0.15, 1, 1)
+)
+
+# Combine full layout
+combined <- plot_grid(
+  top_labels,
+  row1,
+  row2,
+  ncol = 1,
+  rel_heights = c(0.1, 1, 1)
+)
+
+# Add title
+final_plot <- ggdraw() +
+  draw_label("Frequency of eta with the highest C-index by k and lambda", fontface = "bold", size = 16, y = 0.98, hjust = 0.5) +
+  draw_plot(combined, y = 0, height = 0.95)
+
+# Print
+print(final_plot)
+```
+
+In the above figure, we see the results for the C-index. The figure shows the frequency decision taken by the highest C-index, ie at each simulation, we count the $\eta$, which corresponds to the highest C-index. On top, $\lambda=0.005$, which corresponds to a scenario where there are few incident cases (eg, rare disease), and on the bottom, $\lambda=0.005$ is a scenario with several incident cases (eg, common disease). On the left, the estimation is done by a $k=1$ fold, and on the right, a $k=5$ folds does it. For $\lambda=0.05$ the most frequent decision is $\eta=0.7$ when using $k=5$ which is in line with the general recommendation and with the complexity of the model, but using $k=1$ the most frequent decision is $\eta=0$ (too conservative decision). However, when $\lambda=0.005$ the decision is the reverse: using $k=1$ returns $\eta=0.7$ as the most frequent decision and $k=1$ returns $\eta=0.3$ as the most frequent decision (which is conservative). Furthermore, we can see that the plot at the top right ($k=5$) presents larger frequency variability than $k=1$. Remember that the target regions are $\eta \in [0.8, 0.9]$ for $\lambda = 0.005$ or $\eta \in [0.9]$ for $\lambda = 0.05$. Therefore, the frequency distribution is more concentrated in the target region if $k=1$ for $\lambda=0.005$, and $k=5$ for $\lambda=0.05$.
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(patchwork)
+library(grid)
+library(cowplot)
+
+df <- data.frame(
+  eta = sim_surv1$Eta[1:10,1],
+  frequency1 = sim_surv3$Eta[1:10,2]/10, # lambda 1  k=1
+  frequency2 = sim_surv3$Eta[1:10,3]/10, # lambda 1  k=2
+  frequency3 = sim_surv4$Eta[1:10,2]/10, # lambda 2
+  frequency4 = sim_surv4$Eta[1:10,3]/10  # lambda 2
+)
+
+# Ensure 'eta' is treated as a factor for proper labeling on x-axis
+df$eta <- as.factor(df$eta)
+
+# Plot with ggplot2
+p1 = ggplot(df, aes(x = eta, y = frequency1)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+p2 = ggplot(df, aes(x = eta, y = frequency2)) +
+  geom_bar(stat = "identity", fill = "tomato") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+p3 = ggplot(df, aes(x = eta, y = frequency3)) +
+  geom_bar(stat = "identity", fill = "forestgreen") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+p4 = ggplot(df, aes(x = eta, y = frequency4)) +
+  geom_bar(stat = "identity", fill = "orchid") +
+  labs( x = "eta", y = "Frequency") +
+  theme_minimal()
+
+framed_label <- function(text, angle = 0) {
+  ggdraw() +
+    draw_label(
+      text,
+      fontface = "bold",
+      size = 12,
+      angle = angle,
+      hjust = 0.5,
+      vjust = 0.5
+    ) +
+    theme_void() +
+    theme(
+      plot.background = element_rect(color = "lightgray", fill = "gray95", size = 0.8)
+    )
+}
+
+# Label row
+top_labels <- plot_grid(
+  NULL,
+  framed_label("k = 1"),
+  framed_label("k = 5"),
+  nrow = 1,
+  rel_widths = c(0.15, 1, 1)
+)
+
+# Rows with left labels
+row1 <- plot_grid(
+  framed_label(expression(paste(lambda ,"= 0.005")), angle = 90),
+  p1, p2,
+  nrow = 1,
+  rel_widths = c(0.15, 1, 1)
+)
+
+row2 <- plot_grid(
+  framed_label(expression(paste(lambda ,"= 0.05")), angle = 90),
+  p3, p4,
+  nrow = 1,
+  rel_widths = c(0.15, 1, 1)
+)
+
+# Combine full layout
+combined <- plot_grid(
+  top_labels,
+  row1,
+  row2,
+  ncol = 1,
+  rel_heights = c(0.1, 1, 1)
+)
+
+# Add title
+final_plot <- ggdraw() +
+  draw_label("Frequency of eta with the lowest AIC by k and lambda", fontface = "bold", size = 16, y = 0.98, hjust = 0.5) +
+  draw_plot(combined, y = 0, height = 0.95)
+
+# Print
+print(final_plot)
+```
+
+In the above figure, we see the results for the AIC. These findings for AIC are very similar to those observed using C-index as the performance criteria. This reinforces that the findings are not due to the criteria chosen but reflect the need to select the number of folds $k$ adequate to the problem based on sample size, ratio of events, number of dimensions, number of non-zero features, correlation between the features.
+
+# Real application
+
+## Real datasets
+
+The Whitehall II study is an ongoing prospective cohort study established in 1985-1988 among 10,308 British civil servants aged 35 to 55 years with clinical examinations every four–five years since inception @Marmot2005. An accelerometer measure was added to the 2012–2013 wave of data collection, where 4,880 members from the cohort were invited to take part in the sub-study.\
+Participants were followed for incident NCD up to 2023.
+
+The UK Biobank (UKB) is a prospective population-based cohort study on over 500,000 men and women aged between 40 and 69 years established in 2006-2010 @Littlejohns2020. The accelerometer sub-study was proposed to 236,519 individuals between 2013-2015 @Doherty2017. Participants were followed for incident NCD up to 2022.
+
+The accelerometer signal from each participant in both cohorts were extracted by **GGIR** R package @Migueles2019. A brief introduction to the 40 accelerometer derived features can be found in @Chen2022 and @Danilevicz2024. They represent features related to rest-activity rhythm, daytime activity, sleep, and chronotype.
+
+When there are two datasets, usually the bigger is used as a training set and the smaller as a validation set @Lecao2021 [page 81]. However, we intend to test our hypotheses in separate subpopulations, so we choose Whitehall II ($n= 3969$; 291 incident cases (7.3%)) as a training set in order to validate findings in UKB ($n=  54833$; 750 incident cases (1.4%)) and subgroups of this population. This should not be a problematic because Whitehall II is not a small cohort. Participants were included in the analyses if they had data from at least five valid full day windows (defined as wear times $\geq2/3$ of both waking and following sleep periods) @Danilevicz2024B.
+
+## Real data results
+
+Our first model fit is similar to the simulated one in @eq-sim, but now it has a real interpretation. It is as follows 
+$$
+h_i(t) = \lambda \exp( Z_i^{(D,\eta)} \beta ),
+$$
+where $h_i(t)$ is the time for the event for the i-th participant, 
+$Z_i^{(D,\eta)}$ is a matrix of reduced accelerometer-derived data which depend of our choice of tuning parameters $D$ and $\eta$, $\beta$ is a $D$-vector of component coefficients.   
+
+<!--path comment: C:/Users/i_danilevicz/Documents/Computo/Computo_1/ -->
+
+::: {.figure #fig-cv-plots}
+
+<div style="display: flex; gap: 1em;">
+  <img src="figures/cv1.png" width="45%">
+  <img src="figures/cv2.png" width="45%">
+</div>
+
+C-index plots for $\eta = 0, 0.05, \dots, 0.95$ under different seeds, with $k = 5$ (left: seed A, right: seed B).
 :::
 
-**Note:** _Until Quarto version 1.3+ is released, including a remote image (from a web URL) in a document (like the image above) will work in the rendered HTML document but will generate an error when building the PDF document (c.f. [related bug report](https://github.com/quarto-dev/quarto-cli/issues/4443))._
 
-## Tables
+The @fig-cv-plots shows the iAUC for $\eta=0, 0.1, \dots, 0.9$ for $D=1,\dots,4$ (components) from 5-fold CV. At the left, the maximum is achieved by $D=4$ components at $\eta=0.7$ and at the right by $D=3$ at $\eta=0.6$. The only difference is the seed to sampling the participants in each fold. This unstable and conflicting results were observed irrespective of the number of folds used for CV, ie, for $k=3, \dots,10$ folds.
 
-Tables (with label: `@tbl-mylabel` renders @tbl-mylabel) can be generated with markdown as follows
 
-| Tables   |      Are      |  Cool |
-|----------|:-------------:|------:|
-| col 1 is |  left-aligned | $1600 |
-| col 2 is |    centered   |   $12 |
-| col 3 is | right-aligned |    $1 |
-: my table caption {#tbl-mylabel}
 
-Table can also be generated by some code, for instance with knitr here:
+We move from CV to bootstrap, with the results in the @fig-boot-plots (left). First, we fit the same combinations for CV, ie, $D=1,\dots,4$ and $\eta=0, 0.1, \dots, 0.9$. We can see on the left that the results are much more linear, and the number of components is monotomous in terms of four always being higher than three, three always being higher than two, and so on for the respective C-index.
 
-```{r cars}
-knitr::kable(summary(cars), caption = "Table caption.")
-```
+Later, we fit a model that combines the previous model with known risk factors for the event, which is as follow 
+$$
+h_i(t) = \lambda \exp( Z_i^{(D,\eta)} \beta + X_i \alpha),
+$$
+where $X_i$ is the row-vector of known risk factors (sex, age, ethnicity, education, working status, cohabitation status, smoking, alcohol consumption, daily consumption of fruits and vegetables, body mass index (BMI), hypertension, diabetes, hyperlipidemia, multiple comorbidities, central nervous system (CNS) medication) for the i-th participant, $\alpha$ is a $15$-vector of the risk factor coefficient.
+Then in order to identify the best tuning parameters that allow the selected model to improve the predictive value for NCD as compared to known risk factors, we compared the C-index of the model with only the known risk factors (dotted line in the @fig-boot-plots (right)) with the C-index of models including these risk factors and the fitted accelerometer data for $\eta=0, 0.05, \dots, 0.95$ for $D=1,\dots,4$. The C-index mean (points) and CI (bars) were estimated using bootstrap with 1 to 4 components derived from the accelerometer features and all the previously described known risk factors. The C-index for the covariates only was around 0.78. We found that two components are significantly higher than known risk factors only for values of $\eta$ in the range $[0, 0.75]$. So the retained model was the one for $D=2$ and $\eta=0.75$, allowing to improve C-index while being as sparse as possible.
 
-## Handling references {#sec-references}
+::: {.figure #fig-boot-plots}
 
-### Bibliographic references
+<div style="display: flex; gap: 1em;">
+  <img src="figures/boot1.png" width="45%">
+  <img src="figures/boot2.png" width="45%">
+</div>
 
-References are displayed as footnotes using
-[BibTeX](http://www.bibtex.org/), e.g. `[@computo]` will be displayed
-as [@computo], where `computo` is the bibtex key for this specific
-entry. The bibliographic information is automatically retrieved from
-the `.bib` file specified in the header of this document (here:
-`references.bib`).
-
-### Other cross-references
-
-As already (partially) seen, Quarto includes a mechanism similar to the
-bibliographic references for sections, equations, theorems, figures,
-lists, etc. Have a look at [this
-page](https://quarto.org/docs/authoring/cross-references.html).
-
-## Advanced formatting
-
-Advanced formatting features are possible and documented (including interactive plots, pseudo-code, (Tikz) diagrams, Lua filters, mixing R + Python in the same document), but are beyond the scope of this simple introduction. We point several entries in this direction.
-
-::: {.callout-warning}
-## More information
-
-- [The Quarto web site](https://quarto.org) for comprehensive documentation, including:
-  + [Tutorial](https://quarto.org/docs/get-started/)
-  + [User guide](https://quarto.org/docs/guide/)
-  + [Options reference](https://quarto.org/docs/reference/)
-
-- [The template distributed with the Computo Quarto extension](https://computo.sfds.asso.fr/computo-quarto-extension/), which uses such advanced features.
-
-- [Our mock version of the t-SNE paper](https://computo.sfds.asso.fr/published-paper-tsne/), a full and advanced example using Python and the Jupyter kernel.
-
-- [The previously published papers in Computo](https://computo.sfds.asso.fr/publications/) can be used as references.
+C-index (mean and CI) for $\eta=0, 0.05, \dots, 0.95$ for $D=1, \dots, 4$ components, $k=1$, without (left) and with (right) covariates using Bootstrap with 2000 repetitions (dotted line represents the C-index of sociodemographic, behavioural and health-related covariates only).
 
 :::
+
+We created a score with $D=2$ and $\eta=0.75$ for the UKB using the same features and weight matrix $W^*$ identified in the Whitehall II cohort. This score significantly improved the predictive value of a model including known risk factors in the external cohort.
+
+**Note:** Due to the inclusion of sensitive patient information, the datasets used in this section are not publicly available in order to comply with ethical and data privacy regulations. However, access to the data may be granted upon reasonable request to the respective institutions responsible for their maintenance, as referenced in the data availability disclaimer.
+
+# Discussion
+
+To evaluate the stability of hyperparameter selection in the context of rare events, we conducted a Monte Carlo simulation comparing one-fold and five-fold cross-validation. The results show that using one fold is more stable than five folds when cases are rare. Specifically, $\lambda=0.005$ associated with $k=5$ display more conservative decisions ($\eta<0.5$) and larger variability than $\lambda=0.005$ associated with $k=1$. In case of rare events, identifying a stable decision of hyper-parameters may be a challenge. Our findings suggest that it may be more reliable to use one fold, opening to two issues: 1) if there is no repetition, we cannot estimate a confidence interval (CI); 2) we cannot validate our findings as there is no remaining data to test. This raises the importance of having an independent datasets as validation sample. The necessity of external validation is a limitation of this approach, as it is not always available.
+
+Our real data application shows that CV is unstable for $k=5$ in a large sample size as Whitehall II ($n= 3969$). Changing only the initial seed, CV for $k=5$ returns contradictory results such as different optimum values for $\eta$ and $D$. The bootstrap result shows a very stable shape for $\eta$. The conclusion was that $D=2$ with $\eta=0.75$ significantly improved (higher C-index) compared with a model including known risk factors only. 
+
+Applied works commonly used 5 folds @Chen2022 or 10 folds @Kohavi1995, @Lecao2011. A few studies give general advice for CV for similar machine learning techniques; they can recommend between 2 and 10 folds @Breiman1992 or 3 and 10 folds @Lecao2021 \[page 82\] depending on the sample size. However, they do not consider the ratio of cases by non-cases in dichotomous outcomes. Lê Cao and Welham suggest leave-one-out (LOO) for tiny samples and that Bootstrap might be an interesting new approach @Lecao2021 [page 82]. Our simulation and real application agree that $k=1$ is a promising approach for specific situations with few positive outcomes (eg, rare diseases).
+
+Further studies can be developed in several directions. First, this was not an exhaustive simulation study and other parameter may be chosen such as $n, \lambda, D, \beta, R$. Second, other researchers can develop their own simulation to answer their specific goals in terms of sample size, the ratio of events, the number of dimensions, the number of non-zero features, and the correlation between the features (which is simple as this paper displays all the codes for reproducibility). Third, instead of bootstrapping, an alternative and interesting approach is to use U-statistics. @Kang2015 proved that U-statistics can be used to achieve asymptotic distribution of the C-index (confidence intervals may be easily estimated), which saves a lot of time and financial resources if we do cloud processing data.
+
+# Conclusion
+
+The general advice for CV proceedings takes into account the sample size. However, from our study, the number of cases (in dichotomous outcomes) also plays an important role and should not be neglected. Furthermore, dividing the data by folds to CV does not seem a stable strategy if the ratio of cases/noncases is too extreme (which is the case for rare diseases). In fact, a bootstrap on the entire sample appears to be a good solution and we hypothesize that U-statistics could also be useful to derive C-index confidence intervals. However, these approaches require external validation, which is not always available. Further studies can confirm other scenarios where this situation occurs.
 
 # References {.unnumbered}
 
 ::: {#refs}
+:::
+
+# Declarations
+
+## Acknowledges:
+
+We thank all of the participating civil service departments and their welfare, personnel, and establishment officers; the British Occupational Health and Safety Agency; the British Council of Civil Service Unions; all participating civil servants in the Whitehall II study; and all members of the Whitehall II study team. The Whitehall II Study team comprises research scientists, statisticians, study coordinators, nurses, data managers, administrative assistants and data entry staff, who make the study possible.
+
+## Funding:
+
+The Whitehall II study is and was supported by grants from the National Institute on Aging, NIH (R01AG056477, R01AG062553); UK Medical Research Council (R024227, S011676), and the Wellcome Trust (221854/Z/20/Z). SS is funded by the European Union (ERC grant number 101043884).
+
+The funding agencies had no role in the study design, data collection, analyses, and interpretation of the data or writing of the manuscript. Views and opinions expressed are however those of the authors only and do not necessarily reflect those of the funding agencies. Neither the European Union nor the granting authority can be held responsible for them.
+
+## Data availability
+
+Data cannot be made publicly available because of ethics and Institutional Review Board (IRB) restrictions. However, a data sharing portal allows access to data to undertake analyses within the secure portal in [Whitehall II study](https://portal.dementiasplatform.uk/). The UK Biobank data are available through a procedure described at [UK Biobank data](https://www.ukbiobank.ac.uk/enable-your-research).
+
+
+## Ethics approval and consent to participate:
+
+Concerning the Whitehall II data, written informed consent for participation was obtained at each contact. Research ethics approval was obtained from the University College London ethics committee (latest reference number 85/0938).
+
+Concerning the UK Biobank data, approval was received from the National Information Governance Board for Health and Social Care and the National Health Service North West Centre for Research Ethics Committee (reference number 11/NW/0382). All participants gave written consent for participation. Our study was conducted using the UKB Resource under application number 96856.
+
+## Authors’ contributions
+
+IMD and SS developed the hypothesis and study design. IMD conducted data analysis. IMD wrote the first and successive drafts of the manuscript. IMD, SV and SS were involved in the conception, and design of the study, analysis and interpretation of the data, and drafting or critically revising the manuscript for important intellectual content, or, in addition, acquired data. All authors have read and approved the final manuscript.
+
+## Competing interests:
+
+The authors declare that they have no competing interests.
+
+# Finalize your submission
+
+## Handle `R` dependencies with `renv`
+
+To make your work reproducible, you need to fix the packages and environment used to run your analysis. For the `R` system, the `renv` package is one of the possible reliable method, supported by the community. You basically need a couple of commands to setup your environment on your local machine. First,
+
+```{r, eval = FALSE}
+renv::init()
+```
+
+will initialize your repository. Then you just need to install the dependencies required to run your contribution, for instance,
+
+```{r, eval=FALSE}
+renv::install.packages("ggplot2") 
+renv::install.packages("simsurv", dependencies = TRUE)
+renv::install.packages("plsRcox", dependencies = TRUE)
+renv::install.packages("patchwork", dependencies = TRUE)
+renv::install.packages("grid", dependencies = TRUE)
+renv::install.packages("cowplot", dependencies = TRUE)
+renv::install.packages("dplyr", dependencies = TRUE)
+renv::install.packages("tidyr", dependencies = TRUE)
+renv::install.packages("caret", dependencies = TRUE)
+renv::install.packages("Coxmos", dependencies = TRUE)
+
+```
+
+Non-CRAN packages (*e.g.* Github packages) can be used. Once you are done, you can fix everything with the command
+
+```{r, eval=FALSE}
+renv::snapshot()
+```
+
+::: callout-important
+The only file that needs to be versioned by git is `renv.lock`. By default, the rest is ignored thanks to `.gitignore`.
 :::
 
 # Session information {.appendix .unnumbered}
@@ -199,4 +564,3 @@ Advanced formatting features are possible and documented (including interactive 
 ```{r session-info}
 sessionInfo()
 ```
-
