@@ -1,10 +1,6 @@
 project:
-  title: "computo-quarto-extension"
-  render: 
+  render:
     - template-computo-R.qmd
-  resources: 
-    - environment.yml
-
 title: "Challenging estimation of tuning parameters in sPLSDR model to predict the incidence of rare diseases"
 date: 06/10/2025
 date-modified: last-modified
