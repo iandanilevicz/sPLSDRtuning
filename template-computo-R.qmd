@@ -1,38 +1,5 @@
----
-title: "Challenging estimation of tuning parameters in sPLSDR model to predict the incidence of rare diseases"
-author:
-    - name: Ian Meneghel Danilevicz
-      corresponding: true
-      email: ian.meneghel-danilevicz@inserm.fr 
-      url: https://github.com/iandanilevicz/
-      orcid: 0000-0003-4541-0524
-      affiliations:
-      - name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS), EpiAgeing, F-75004 Paris, France 
-        url: https://cress-umr1153.fr/fr/teams/epiageing/ 
-    - name: Sam Vidil
-      url: https://github.com/samvidil
-      orcid: 0009-0007-6414-3966
-      affiliations:
-      - name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS), EpiAgeing, F-75004 Paris, France 
-        
-    - name: Séverine Sabia
-      url: https://github.com/sevslb
-      orcid: 0000-0003-3109-9720
-      affiliations:
-      - name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS), EpiAgeing, F-75004 Paris, France 
-      - name: UCL Brain Sciences, Division of Psychiatry, University College London, London, UK
-        url: https://www.ucl.ac.uk/brain-sciences/psychiatry
-#date: 06/28/2023
-#date-modified: last-modified
-abstract: >+
-  We investigate some practical points of the sparse partial least squares deviance residuals (sPLSDR) model, a machine learning (ML) method with important application potential and a powerful alternative for Cox regression analysis when dimension reduction and variable selection are required. It can be used in a broad range of contexts, among which the health domain. This method requires to tune two hyper-parameters: eta (sparsity level) and D (number of components). Usually, the literature recommends cross-validation (CV) with a number of folds that depends on the sample size to estimate the hyperparameters. However, in case of dichotomous outcome for which the ratio of cases and non-cases is small this approach appears to be unstable. This is the case in rare disease such as incidence of major neurocognitive disorder (NCD). In that case, even large samples may perform as poorly as small samples. We specifically test this scenario of large samples with rare events using Monte Carlo simulations with different performance criteria (C-index and AIC). We observed that five folds are more conservative (biased) than one fold, and it presents more variability (less precise) in case of rare event outcomes. Previous authors suggested that Bootstrap or leave-one-out (LOO) could be a wise alternative. We checked Bootstrap with one fold in our real analysis application using the Whitehall II accelerometer sub-study (N total = 3,969,  cases = 291 (7.3%)) as a training set and the UK Biobank as a validation set (N total = 54,833,  cases = 750 (1.4\%)), both considerably large sample size studies, with incidence of major neurocognitive disorders as an example of rare outcomes. This application shows that CV is sensitive to the number of folds and the initial seed. The counterpart Bootstrap was more robust and displayed two components with eta equal to 0.75 as a consistent optimum choice for the tuning parameters. However, this approach requires external validation, which is not always feasible. Further studies can better map the ideal number of folds for CV depending on the sample size and the ratio of cases/non-cases. As dichotomous outcomes and survival time are classical statistical subjects, the ML literature provide clear and precise recommendations for several available dawn methods.  
-keywords: [Machine learning, Survival analysis, Variable selection, Cross-validation, Bootstrap]
-bibliography: references.bib
-header-includes:
-  - \usepackage{bm,amsfonts,amsmath,amssymb,graphicx,algorithm2e,enumerate}
----
 
-# Background
+# Introduction
 
 Accelerometer devices objectively measure the wrist acceleration of human participants @Migueles2019. The derived features calculated from the accelerometer three axial time series aggregated per minute for each participant during a certain period of time can be used to estimate rest-activity rhythm, daytime activity, sleep, and chronotype. These features can be used to predict several health outcomes such as mortality @Chen2022, cardio-metabolic diseases @Cassidy2018, and neurodegenerative diseases @Nguyen2023. This represents a vast potential for medical research @Chan2022 as these devices provide a more objective and detailed information than commonly used self-reported data.
 
@@ -113,50 +80,49 @@ So this simple model may be well estimated by a sPLSDR model with two dimensions
 
 Before the results, we implemented some functions available in the R folder. Also, some packages are necessary, such as **plsRcox** (the original package to estimate sPLSDR @Bastien2014), **Coxmos** (another package to estimate sPLSDR but with a convenient way to extract the $W^*$ matrix of weights, this matrix is similar to a loading matrix in PCA @Coxmos), **caret** (to split the dataset in folds @caret).
 
-```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+```{r  message=FALSE, warning=FALSE}
+# Set repositories
+options(
+  repos = c(CRAN = "https://cloud.r-project.org"),
+  BioC_mirror = "https://bioconductor.org"
+)
+
+# Helper: install a package only if missing
+install_if_missing <- function(pkg, bioc = FALSE) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    if (bioc) {
+      if (!requireNamespace("BiocManager", quietly = TRUE))
+        install.packages("BiocManager", repos = "https://cloud.r-project.org")
+      BiocManager::install(pkg, ask = FALSE)
+    } else {
+      install.packages(pkg, repos = "https://cloud.r-project.org")
+    }
+  }
+}
+
+# Install required packages (only if missing)
+install_if_missing("mixOmics", bioc = TRUE)
+install_if_missing("survcomp", bioc = TRUE)
+install_if_missing("plsRcox")
+install_if_missing("Coxmos")
+install_if_missing("simsurv")
+install_if_missing("caret")
+
+# Load libraries
+library(survcomp)
+library(mixOmics)
 library(plsRcox)
 library(Coxmos)
 library(simsurv)
-library(caret) 
+library(caret)
 
-# Remember to replace this line to Github directory
-source("C:/Users/idanilevicz/Documents/Ian/Computo/Computo_1/R/functions3.R")
-```
-
-```{r include=FALSE, message=FALSE, warning=FALSE}
-library(plsRcox)
-library(Coxmos)
-library(simsurv)
-library(caret) 
-
-# Remember to replace this line to Github directory
-source("C:/Users/idanilevicz/Documents/Ian/Computo/Computo_1/R/functions3.R")
+# Source functions from GitHub
+source("https://raw.githubusercontent.com/iandanilevicz/sPLSDRtuning/main/R/functions3.R")
 ```
 
 Then we run the simulations using our loaded functions.
 
-<!--this is for display only -->
-
-```{r eval=FALSE, message=FALSE, warning=FALSE}
-
-lambda1 = 0.005
-lambda2 = 0.05
-
-nfold = 5
-n = 5000
-maxt = 10
-M = 1000
-eta = 0:9/10
-
-set.seed(2025)
-sim_surv1 =  sim_surv_c(lambda1, n, M, eta, ncomp=2, nfold, maxt)   # lambda 1 and c-index
-sim_surv2 =  sim_surv_c(lambda2, n, M, eta, ncomp=2, nfold, maxt)   # lambda 2 and c-index  
-
-set.seed(2025)
-sim_surv3 =  sim_surv_aic(lambda1, n, M, eta, ncomp=2, nfold, maxt) # lambda 1 and AIC  
-sim_surv4 =  sim_surv_aic(lambda2, n, M, eta, ncomp=2, nfold, maxt) # lambda 2 and AIC
-
-```
 
 <!--this really run -->
 
@@ -204,7 +170,7 @@ ggplot(df_long, aes(x = factor(Eta), y = N_features, fill = Lambda)) +
   labs(
     x = expression(eta),
     y = "Number of selected features",
-    title = "Selected features by η and λ"
+    title = "Selected features by eta and lambda"
   ) +
   theme_minimal() +
   scale_fill_manual(values = c("λ = 0.005" = "lightblue", "λ = 0.05" = "lightgreen"))+
@@ -301,9 +267,9 @@ combined <- plot_grid(
   rel_heights = c(0.1, 1, 1)
 )
 
-# Add title
+# Add title: Frequency of eta with the highest C-index by k and lambda
 final_plot <- ggdraw() +
-  draw_label("Frequency of eta with the highest C-index by k and lambda", fontface = "bold", size = 16, y = 0.98, hjust = 0.5) +
+  draw_label("The highest C-index", fontface = "bold", size = 16, y = 0.98, hjust = 0.5) +
   draw_plot(combined, y = 0, height = 0.95)
 
 # Print
@@ -399,9 +365,9 @@ combined <- plot_grid(
   rel_heights = c(0.1, 1, 1)
 )
 
-# Add title
+# Add title: Frequency of eta with the lowest AIC by k and lambda
 final_plot <- ggdraw() +
-  draw_label("Frequency of eta with the lowest AIC by k and lambda", fontface = "bold", size = 16, y = 0.98, hjust = 0.5) +
+  draw_label("The lowest AIC", fontface = "bold", size = 16, y = 0.98, hjust = 0.5) +
   draw_plot(combined, y = 0, height = 0.95)
 
 # Print
