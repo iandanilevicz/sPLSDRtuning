@@ -1,24 +1,31 @@
-name: Main Workflows
+name: Global Environment Setup
 
 on:
-  schedule:
-    - cron: "0 8 * * 0"
-  push:
-    branches: ["main","master"]
-  repository_dispatch:
-    types: [custom-event] 
-  workflow_dispatch:
-  pull_request:
-    branches: ["main","master"]
-
+  workflow_call:
 
 jobs:
-  call_env_workflow:
-    uses: computorg/workflows/.github/workflows/global-env.yml@main
-  call_quartopublish_workflow:
-    permissions:
-      id-token: write
-      contents: write
-      pages: write
-    uses: computorg/workflows/.github/workflows/publish-render.yml@main
-    needs: call_env_workflow
+  setup-r-env:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.0'
+
+      # ✅ Install system dependencies needed for mvtnorm
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libblas-dev liblapack-dev gfortran
+
+      - name: Install R packages
+        run: |
+          Rscript -e 'install.packages(c("mvtnorm","plsRcox","prodlim","ipred","survcomp"), repos="https://cloud.r-project.org")'
+
+      - name: Verify R packages
+        run: |
+          Rscript -e 'library(mvtnorm); library(plsRcox); library(prodlim); library(ipred); library(survcomp)'
