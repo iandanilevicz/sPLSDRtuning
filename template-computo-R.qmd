@@ -118,7 +118,8 @@ library(simsurv)
 library(caret)
 
 # Source functions from GitHub
-source("https://raw.githubusercontent.com/iandanilevicz/sPLSDRtuning/main/R/functions3.R")
+# source("https://raw.githubusercontent.com/iandanilevicz/sPLSDRtuning/main/R/functions3.R")
+source("R/functions3.R")
 ```
 
 Then we run the simulations using our loaded functions.
