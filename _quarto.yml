@@ -1,7 +1,7 @@
 project:
   title: "computo-quarto-extension"
   render: 
-    - computo-quarto-extension.qmd
+    - template-computo-R.qmd
   resources: 
     - environment.yml
 
