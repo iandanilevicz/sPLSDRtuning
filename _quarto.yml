@@ -75,10 +75,6 @@ format:
   computo-html: default
   computo-pdf: default
 
-diagram:
-  engine:
-    tikz:
-      header-includes:
-        - '\usetikzlibrary{arrows}'
+
 
 
