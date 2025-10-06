@@ -1,16 +1,26 @@
 # Challenging estimation of tuning parameters in sPLSDR model to predict the incidence of rare diseases
-Ian Meneghel Danilevicz, Sam Vidil, Severine Sabia
-2025-10-06
+**Ian Meneghel Danilevicz**, **Sam Vidil**, **Séverine Sabia**  
+*2025-10-06*
 
+[![Creative Commons License](https://i.creativecommons.org/l/by/4.0/80x15.png)](https://creativecommons.org/licenses/by/4.0/)  
+This work is licensed under a [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/).
 
-
-[![Creative Commons License](https://i.creativecommons.org/l/by/4.0/80x15.png)](http://creativecommons.org/licenses/by/4.0/)
+---
 
 ### Authors
 
-- [Ian Meneghel Danilevicz](Universite Paris Cite, Inserm, CRESS)
-- [Sam Vidil](Universite Paris Cite, Inserm, CRESS)
-- [Severine Sabia](Universite Paris Cite, Inserm, CRESS)(University College London)
+- **Ian Meneghel Danilevicz**  
+  Université Paris Cité, Inserm, CRESS, France  
+
+- **Sam Vidil**  
+  Université Paris Cité, Inserm, CRESS, France  
+
+- **Séverine Sabia**  
+  Université Paris Cité, Inserm, CRESS, France  
+  University College London, Division of Psychiatry, UCL Brain Sciences, London, United Kingdom  
+
+---
+
 ### Abstract
 
 We investigate some practical points of the sparse partial least squares deviance residuals (sPLSDR) model, 
