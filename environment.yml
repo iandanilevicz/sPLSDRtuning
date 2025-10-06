@@ -1,4 +1,4 @@
-name: computo-quarto-extension
+name: template-computo-R
 channels:
   - conda-forge
 dependencies:
