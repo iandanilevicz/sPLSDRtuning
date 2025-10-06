@@ -1,12 +1,10 @@
-# Template for contribution to Computo
+# Challenging estimation of tuning parameters in sPLSDR model to predict the incidence of rare diseases
 Ian Meneghel Danilevicz, Sam Vidil, Severine Sabia
 2025-10-06
 
 
-[![build and
-publish](https://github.com/computorg/template-computo-r/actions/workflows/build.yml/badge.svg)](https://github.com/computorg/template-computo-r/actions/workflows/build.yml)
-[![Creative Commons
-License](https://i.creativecommons.org/l/by/4.0/80x15.png)](http://creativecommons.org/licenses/by/4.0/)
+
+[![Creative Commons License](https://i.creativecommons.org/l/by/4.0/80x15.png)](http://creativecommons.org/licenses/by/4.0/)
 
 ### Authors
 
