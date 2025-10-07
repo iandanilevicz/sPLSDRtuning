@@ -80,36 +80,7 @@ options(
   BioC_mirror = "https://bioconductor.org"
 )
 
-# Helper: install a package only if missing
-install_if_missing <- function(pkg, bioc = FALSE) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    if (bioc) {
-      if (!requireNamespace("BiocManager", quietly = TRUE))
-        install.packages("BiocManager", repos = "https://cloud.r-project.org")
-      BiocManager::install(pkg, ask = FALSE)
-    } else {
-      install.packages(pkg, repos = "https://cloud.r-project.org")
-    }
-  }
-}
 
-# Install required packages (only if missing)
-install_if_missing("mixOmics", bioc = TRUE)
-install_if_missing("survcomp", bioc = TRUE)
-#install_if_missing("plsRcox")
-install_if_missing("Coxmos")
-install_if_missing("simsurv")
-install_if_missing("caret")
-install_if_missing("MASS")
-
-# Load libraries
-library(survcomp)
-#library(mixOmics)
-#library(plsRcox)
-library(Coxmos)
-library(simsurv)
-library(caret)
-library(MASS)
 
 # Source functions from GitHub
 # source("https://raw.githubusercontent.com/iandanilevicz/sPLSDRtuning/main/R/functions3.R")
