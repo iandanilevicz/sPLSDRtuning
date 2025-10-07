@@ -63,65 +63,6 @@ d.  Update $\hat{\beta}^{PLS}$ by using the new sPLS estimates of the direction 
 ```
 5.  Cox model on the $D$ retained sPLSDR components.
 
-# Monte Carlo study
 
-## Simulation plan
-
-We used an exponential survival model, where the hazard function is 
-$$
-h_i(t) = \lambda \exp( X_i \beta ),
-$${#eq-sim} 
-and the cumulative hazard is $$H_i(t) = \lambda t \exp( X_i \beta ),$$ such as implemented on the **simsurv** R Package by @Brilleman2021. We create artificial data with $n=5000$ number of individuals, $\lambda=0.05, 0.005$ rate parameter, $\beta^T = (\beta^T_1, \beta^T_2, \beta^T_3)$ is the coefficient parameters, composed by $\beta^T_1 = (0.15, 0.1, 0.05)$, $\beta^T_2 = (-0.15, -0.1, -0.05)$ and\
-$\beta^T_3=(0,0,0,0,0,0)$; the covariate matrix is $X_{i,(1:3)} \sim N(\mu_1, R)$ a multivariate normal with $\mu_1=(0.15, 0.1, 0.05)^T$ and $R$ a matrix with variance on the diagonal of ones and covariance on the off-diagonals of 0.5; $X_{i,(4:6)} \sim N(\mu_2, R)$ a multivariate normal with $\mu_2=(-0.15, -0.1, -0.05)^T$ and same covariance; $X_{i,(7:12)} \sim N(\mu_3, I)$ a multivariate normal with $\mu_3=(0,0,0,0,0,0)^T$ and $I$ an identity matrix. The maximum observed time is $m=10$.
-
-So this simple model may be well estimated by a sPLSDR model with two dimensions. We proceed with a Monte Carlo simulation, replicating $M=1000$ times each $\lambda$ and estimating the model changing $\eta=0, 0.1, 0.2, \dots, 0.9$, using $k=1,5$ folds. We save the C-index and the AIC of each iteration of the Monte Carlo. We set all models with two dimensions ($D=2$). Finally, we count how many times each value of $\eta$ was considered the best in the row; this results in a frequency per value of $\eta$.
-
-## Simulation implementation
-
-Before the results, we implemented some functions available in the R folder. Also, some packages are necessary, such as **plsRcox** (the original package to estimate sPLSDR @Bastien2014), **Coxmos** (another package to estimate sPLSDR but with a convenient way to extract the $W^*$ matrix of weights, this matrix is similar to a loading matrix in PCA @Coxmos), **caret** (to split the dataset in folds @caret).
-
-
-```{r  message=FALSE, warning=FALSE}
-# Set repositories
-options(
-  repos = c(CRAN = "https://cloud.r-project.org"),
-  BioC_mirror = "https://bioconductor.org"
-)
-
-# Helper: install a package only if missing
-install_if_missing <- function(pkg, bioc = FALSE) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    if (bioc) {
-      if (!requireNamespace("BiocManager", quietly = TRUE))
-        install.packages("BiocManager", repos = "https://cloud.r-project.org")
-      BiocManager::install(pkg, ask = FALSE)
-    } else {
-      install.packages(pkg, repos = "https://cloud.r-project.org")
-    }
-  }
-}
-
-# Install required packages (only if missing)
-install_if_missing("mixOmics", bioc = TRUE)
-install_if_missing("survcomp", bioc = TRUE)
-#install_if_missing("plsRcox")
-install_if_missing("Coxmos")
-install_if_missing("simsurv")
-install_if_missing("caret")
-install_if_missing("MASS")
-
-# Load libraries
-library(survcomp)
-#library(mixOmics)
-#library(plsRcox)
-library(Coxmos)
-library(simsurv)
-library(caret)
-library(MASS)
-
-# Source functions from GitHub
-# source("https://raw.githubusercontent.com/iandanilevicz/sPLSDRtuning/main/R/functions3.R")
-source("R/functions3.R")
-```
 
 
