@@ -72,7 +72,15 @@ So this simple model may be well estimated by a sPLSDR model with two dimensions
 
 Before the results, we implemented some functions available in the R folder. Also, some packages are necessary, such as **plsRcox** (the original package to estimate sPLSDR @Bastien2014), **Coxmos** (another package to estimate sPLSDR but with a convenient way to extract the $W^*$ matrix of weights, this matrix is similar to a loading matrix in PCA @Coxmos), **caret** (to split the dataset in folds @caret).
 
+```{r  message=FALSE, warning=FALSE}
 
+install.packages("renv")  
+renv::init()
+
+install.packages(c("Coxmos", "simsurv", "caret", "MASS", "nloptr", "survcomp", "mixOmics"))
+
+renv::snapshot()
+```
 
 
 
