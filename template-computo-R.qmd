@@ -49,10 +49,10 @@ The algorithm was described in @Bastien2014 as folllows
 2.  Computation of the sPLS components by using the sPLS regression from @eq-spls with the null deviance residuals as outcome.
 3.  Set $\hat{\beta}^{PLS}=0$, $d=1$, $Y=r$.
 4.  While $d \leq D$:
-    4.1. $w = (|z|-c/2)+ \mathrm{sign}(z)$, where $z=X^TY/|| X^TY||_2$.
-    4.2. Update $\Omega$ as $\{d : \hat{w}_d \neq 0\} \cup \{d : \hat{\beta}^{PLS}_d \neq 0\}$.
-    4.3. Fit sPLS with $X$ by using the $d$ number of latent components.
-    4.4. Update $\hat{\beta}^{PLS}$ by using the new sPLS estimates of the direction vectors and update $Y$ and $d$ through $Y \leftarrow Y-X\hat{\beta}^{PLS}$ and $d \leftarrow d+1$.
+4.1. $w = (|z|-c/2)+ \mathrm{sign}(z)$, where $z=X^TY/|| X^TY||_2$.
+4.2. Update $\Omega$ as $\{d : \hat{w}_d \neq 0\} \cup \{d : \hat{\beta}^{PLS}_d \neq 0\}$.
+4.3. Fit sPLS with $X$ by using the $d$ number of latent components.
+4.4. Update $\hat{\beta}^{PLS}$ by using the new sPLS estimates of the direction vectors and update $Y$ and $d$ through $Y \leftarrow Y-X\hat{\beta}^{PLS}$ and $d \leftarrow d+1$.
 5.  Cox model on the $D$ retained sPLSDR components.
 
 # Monte Carlo study
@@ -392,16 +392,22 @@ $$
 where $h_i(t)$ is the time for the event for the i-th participant, 
 $Z_i^{(D,\eta)}$ is a matrix of reduced accelerometer-derived data which depend of our choice of tuning parameters $D$ and $\eta$, $\beta$ is a $D$-vector of component coefficients.   
 
-<!--path comment: C:/Users/i_danilevicz/Documents/Computo/Computo_1/ -->
-
 ::: {.figure #fig-cv-plots}
 
-<div style="display: flex; gap: 1em;">
-  <img src="figures/cv1.png" width="45%">
-  <img src="figures/cv2.png" width="45%">
-</div>
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/cv1.png}
+\caption*{Seed A}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/cv2.png}
+\caption*{Seed B}
+\end{minipage}
 
 C-index plots for $\eta = 0, 0.05, \dots, 0.95$ under different seeds, with $k = 5$ (left: seed A, right: seed B).
+
 :::
 
 
@@ -420,10 +426,17 @@ Then in order to identify the best tuning parameters that allow the selected mod
 
 ::: {.figure #fig-boot-plots}
 
-<div style="display: flex; gap: 1em;">
-  <img src="figures/boot1.png" width="45%">
-  <img src="figures/boot2.png" width="45%">
-</div>
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/boot1.png}
+\caption*{Without covariates}
+\end{minipage}
+\hfill
+\begin{minipage}{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{figures/boot2.png}
+\caption*{With covariates}
+\end{minipage}
 
 C-index (mean and CI) for $\eta=0, 0.05, \dots, 0.95$ for $D=1, \dots, 4$ components, $k=1$, without (left) and with (right) covariates using Bootstrap with 2000 repetitions (dotted line represents the C-index of sociodemographic, behavioural and health-related covariates only).
 
