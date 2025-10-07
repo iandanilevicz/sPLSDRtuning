@@ -2,7 +2,7 @@ project:
   render:
     - template-computo-R.qmd
 title: "Challenging estimation of tuning parameters in sPLSDR model to predict the incidence of rare diseases"
-date: 06/10/2025
+date: 2025-10-07
 date-modified: last-modified
 author:
   - name: Ian Meneghel Danilevicz 
@@ -25,22 +25,23 @@ author:
       - ref: univ2
 affiliations:
   - id: univ1
-    name: Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS)
+    name: "Université Paris Cité, Inserm, Center for Research in Epidemiology and Statistics (CRESS)"
     department: EpiAgeing
     address: 
     city: Paris
     country: France
     postal-code: 75004
   - id: univ2
-    name: University College London, 
-    department: UCL Brain Sciences, Division of Psychiatry
+    name: "University College London" 
+    department: "UCL Brain Sciences, Division of Psychiatry"
     address: 
     city: London
     country: UK
     postal-code: W1T 7NF    
 description: |
-  This document provides a template based on the quarto system for contributions to Computo. 
-  The github repository in itself provides a specific quarto extension useful for authors (and editors!).
+  This document provides a template based on the Quarto system for contributions to *Computo*.
+  The GitHub repository provides a specific Quarto extension useful for authors (and editors).
+  
 keywords: [Machine learning, Survival analysis, Variable selection, Cross-validation, Bootstrap]
 abstract: |
   We investigate some practical points of the sparse partial least squares deviance residuals (sPLSDR) model, 
@@ -57,7 +58,7 @@ abstract: |
   event outcomes. Previous authors suggested that Bootstrap or leave-one-out (LOO) could be a wise alternative. 
   We checked Bootstrap with one fold in our real analysis application using the Whitehall II accelerometer 
   sub-study (N total = 3,969,  cases = 291 (7.3%)) as a training set and the UK Biobank as a validation set 
-  (N total = 54,833,  cases = 750 (1.4\%)), both considerably large sample size studies, with incidence of 
+  (N total = 54,833,  cases = 750 (1.4%)), both considerably large sample size studies, with incidence of 
   major neurocognitive disorders as an example of rare outcomes. This application shows that CV is sensitive 
   to the number of folds and the initial seed. The counterpart Bootstrap was more robust and displayed two 
   components with eta equal to 0.75 as a consistent optimum choice for the tuning parameters. However, this 
