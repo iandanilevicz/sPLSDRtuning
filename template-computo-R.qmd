@@ -45,22 +45,14 @@ The sparse partial least squares deviance residual (sPLSDR) model was proposed b
 
 The algorithm was described in @Bastien2014 as folllows
 
-1.  Cox model without covariates to derive the null deviance residuals $r = (r_1, \dots, r_n)^T$ from @eq-residuals
+1.  Cox model without covariates to derive the null deviance residuals $r = (r_1, \dots, r_n)^T$ from @eq-residuals.
 2.  Computation of the sPLS components by using the sPLS regression from @eq-spls with the null deviance residuals as outcome.
-3.  Set $\hat{\beta}^{PLS}=0$, $d=1$, $Y=r$,
-4.  While $d \leq D$
-
-```{=html}
-<!-- -->
-```
-a.  $w = (|z|-c/2)+ \mathrm{sign}(z)$, where $z=X^TY/|| X^TY||_2$,
-b.  Update $\Omega$ as $\{d : \hat{w}_d \neq 0\} \cup \{d : \hat{\beta}^{PLS}_d \neq 0\}$
-c.  Fit sPLS with $X$ by using the $d$ number of latent components.
-d.  Update $\hat{\beta}^{PLS}$ by using the new sPLS estimates of the direction vectors and update $Y$ and $d$ through $Y \leftarrow Y-X\hat{\beta}^{PLS}$ and $d \leftarrow d+1$
-
-```{=html}
-<!-- -->
-```
+3.  Set $\hat{\beta}^{PLS}=0$, $d=1$, $Y=r$.
+4.  While $d \leq D$:
+    4.1. $w = (|z|-c/2)+ \mathrm{sign}(z)$, where $z=X^TY/|| X^TY||_2$.
+    4.2. Update $\Omega$ as $\{d : \hat{w}_d \neq 0\} \cup \{d : \hat{\beta}^{PLS}_d \neq 0\}$.
+    4.3. Fit sPLS with $X$ by using the $d$ number of latent components.
+    4.4. Update $\hat{\beta}^{PLS}$ by using the new sPLS estimates of the direction vectors and update $Y$ and $d$ through $Y \leftarrow Y-X\hat{\beta}^{PLS}$ and $d \leftarrow d+1$.
 5.  Cox model on the $D$ retained sPLSDR components.
 
 
